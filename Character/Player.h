@@ -13,6 +13,8 @@ class Player {
 public:
     Player();
 
+    Player(const std::string &Name, int difficulty, int health);
+
 public:
     const std::string &getName() const;
 
