@@ -6,9 +6,17 @@
 #define MONK_ROOM_H
 #include <string>
 
+using namespace std;
 class Room {
 public:
-    Room( int type, bool monster);
+    Room(const string &name, int type, bool monster);
+
+
+public:
+
+    const string &getName() const;
+
+    void setName(const string &name);
 
     int getType() const;
 
@@ -18,14 +26,11 @@ public:
 
     void setMonster(bool monster);
 
-    void printRoom();
-
-public:
-
-
 private:
-    int name,type;
+    string name;
+    int type;
     bool monster;
+
 };
 
 

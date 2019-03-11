@@ -5,8 +5,16 @@
 #include <iostream>
 #include "Room.h"
 
-Room::Room(int type, bool monster) : type(type), monster(monster) {}
 
+Room::Room(const string &name, int type, bool monster) : name(name), type(type), monster(monster) {}
+
+const string &Room::getName() const {
+    return name;
+}
+
+void Room::setName(const string &name) {
+    Room::name = name;
+}
 
 int Room::getType() const {
     return type;
@@ -23,6 +31,3 @@ bool Room::isMonster() const {
 void Room::setMonster(bool monster) {
     Room::monster = monster;
 }
-void Room::printRoom(){
-    std::cout << " Type: " << type << " Monster: " << monster << "\n";
-};
