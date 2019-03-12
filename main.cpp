@@ -3,52 +3,44 @@
 #include "Character/Player.h"
 #include "Dungon/Room.h"
 #include "Tools/Weapon.h"
+#include "DrawingRooms/Draw.h"
 #include <sstream>
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+
 using namespace std;
-void createWeapons(vector<Weapon> weaponList);
-Player Welcome();
+
 int randNum(int min, int max);
-vector < vector <Room> > generateDungeon(int dungeonSize);
-void printDungeon(const vector<vector <Room> > & dungeon);
-void startGame(const vector<Room>&, Player monk);
+Player Welcome();
+void createWeapons(vector<Weapon> weaponList);
 void setPlayerWeapon(const vector<Weapon>& weaponList,Player monk);
+vector < vector <Room> > generateDungeon();
+void printDungeon(vector< vector<Room> > &dungeon);
+void printRoomEmpty();
+void startGame(const vector<Room>&, Player monk);
 
 int main() {
     srand((unsigned)time(NULL));//Sets seed for random generator
-    Player *monk = new Player(Welcome());
+    //Player *monk = new Player(Welcome());
     cout << "---  Monk Created  ---" << endl;
     cout << "---  Generating Dungeon  ---" << endl;
-    int dungeonSize = randNum(1,10);
-    int roomCount = 0;
-    vector <vector <Room> >  dungeon  = generateDungeon(dungeonSize);// Generated the dungeon's rooms
-    for(int i = 0; i < dungeon.size(); i++){
-        roomCount =  roomCount + dungeon[i].size();
-        for(int j = 0; j<dungeon[i].size(); j++){
-            cout << "X: " << dungeon[i][j].getX() << " Y: " << dungeon[i][j].getY() << " ";
-        }
-        cout << endl;
-    }
-    cout << "Room count: " << roomCount << endl;
+    vector <vector <Room> >  dungeon  = generateDungeon();// Generated the dungeon's rooms
+    //printDungeon(dungeon); //Prints the dungeon on screen
+    Draw Drawer = Draw();
+    Drawer.eLeft();
+    Drawer.eLeftRight();
+    Drawer.eTopLeft();
+    Drawer.eRight();
+    Drawer.eLeftRight();
     cout << "---  Dungeon Complete  ---" << endl;
     //startGame(dungeon, *monk);
     return 0;
 }
-void createWeapons(vector<Weapon> weaponList) {
-    Weapon w1 = Weapon(0,"Blue Thunder", "Sword", 2);
-    weaponList.push_back(w1);
-    Weapon w2 = Weapon(1,"Walking stick","Stick", 4);
-    weaponList.push_back(w2);
-    Weapon w3 = Weapon(2,"Splitting Pain","Battle Axe", 3);
-    weaponList.push_back(w3);
-    Weapon w4 = Weapon(3,"Ramming rampage","Hammer", 2);
-    weaponList.push_back(w3);
-    Weapon w5 = Weapon(4,"Ninja Crazy","Nunchucks", 1);
-    weaponList.push_back(w4);
+int randNum(int min, int max){
+    return rand() % (max - min + 1) + min;
+}
 
-};
 Player Welcome(){
     string input;
     int diff;
@@ -74,6 +66,20 @@ Player Welcome(){
     return monk;
 }
 
+void createWeapons(vector<Weapon> weaponList) {
+    Weapon w1 = Weapon(0,"Blue Thunder", "Sword", 2);
+    weaponList.push_back(w1);
+    Weapon w2 = Weapon(1,"Walking stick","Stick", 4);
+    weaponList.push_back(w2);
+    Weapon w3 = Weapon(2,"Splitting Pain","Battle Axe", 3);
+    weaponList.push_back(w3);
+    Weapon w4 = Weapon(3,"Ramming rampage","Hammer", 2);
+    weaponList.push_back(w3);
+    Weapon w5 = Weapon(4,"Ninja Crazy","Nunchucks", 1);
+    weaponList.push_back(w4);
+
+};
+
 void setPlayerWeapon(const vector<Weapon>& weaponList, Player monk) {
     int weaponChance = 100;
     if (monk.getDifficulty() == 2) {
@@ -85,12 +91,33 @@ void setPlayerWeapon(const vector<Weapon>& weaponList, Player monk) {
     const int weaponID = loadWeapon / 10;
 }
 
-int randNum(int min, int max){
-    return rand() % (max - min + 1) + min;
 
-
+vector < vector <Room> > generateDungeon(){
+    vector< vector<Room> > dungeon;// Created the dungeon vector
+    for (int i = 0; i < 5; i++){
+        vector<Room>temp;
+        for (int j = 0; j < 5; j++){
+            Room room = Room("name", randNum(1,2) ,i,j);
+            temp.push_back(room);
+        }
+        dungeon.push_back(temp);
+    }
+    return dungeon;
 }
-
+void printDungeon(vector< vector<Room> > &dungeon){
+    int roomCount = 0;
+    cout << "---------  Dungeon  ---------" << endl;
+    for(int i = 0; i < dungeon.size(); i++){
+        roomCount =  roomCount + dungeon[i].size();
+        for(int j = 0; j<dungeon[i].size(); j++){
+            cout << "(" << dungeon[i][j].getX() << "," << dungeon[i][j].getY() << ") ";
+        }
+        cout << endl;
+    }
+    cout << "-----  Number of Rooms  -----" << endl;
+    cout << "Room count: " << roomCount << endl;
+    cout << "---------  Dungeon  ---------" << endl;
+}
 void startGame(const vector<Room>& dungeon, Player monk) {
     string name;
     int health;
@@ -108,17 +135,4 @@ void startGame(const vector<Room>& dungeon, Player monk) {
             }
         }*/
     }
-}
-
-vector < vector <Room> > generateDungeon(int dungeonSize){
-    vector< vector<Room> > dungeon;// Created the dungeon vector
-    for (int i = 0; i < 5; i++){
-        vector<Room>temp;
-        for (int j = 0; j < 5; j++){
-            Room room = Room("name", randNum(1,2) ,i,j);
-            temp.push_back(room);
-        }
-        dungeon.push_back(temp);
-    }
-    return dungeon;
 }
