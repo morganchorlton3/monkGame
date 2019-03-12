@@ -9,10 +9,8 @@
 using namespace std;
 class Room {
 public:
-    Room(const string &name, int type, bool monster);
 
-
-public:
+    Room(const string &name, int type, int X, int Y);
 
     const string &getName() const;
 
@@ -22,14 +20,17 @@ public:
 
     void setType(int type);
 
-    bool isMonster() const;
+    int getX() const;
 
-    void setMonster(bool monster);
+    void setX(int X);
+
+    int getY() const;
+
+    void setY(int Y);
 
 private:
     string name;
-    int type;
-    bool monster;
+    int type, X, Y;
 
 };
 

@@ -27,10 +27,9 @@ int main() {
     for(int i = 0; i < dungeon.size(); i++){
         roomCount =  roomCount + dungeon[i].size();
         for(int j = 0; j<dungeon[i].size(); j++){
-            cout << "Name: " << dungeon[i][j].getName() << endl;
-            cout << "Type: " << dungeon[i][j].getType() << endl;
-            cout << "Monster: " << dungeon[i][j].isMonster() << endl;
+            cout << "X: " << dungeon[i][j].getX() << " Y: " << dungeon[i][j].getY() << " ";
         }
+        cout << endl;
     }
     cout << "Room count: " << roomCount << endl;
     cout << "---  Dungeon Complete  ---" << endl;
@@ -115,46 +114,11 @@ vector < vector <Room> > generateDungeon(int dungeonSize){
     vector< vector<Room> > dungeon;// Created the dungeon vector
     for (int i = 0; i < 5; i++){
         vector<Room>temp;
-        for (int j = 0; j < dungeonSize; j++){
-            Room room = Room("name", randNum(0,2) ,true);
+        for (int j = 0; j < 5; j++){
+            Room room = Room("name", randNum(1,2) ,i,j);
             temp.push_back(room);
         }
         dungeon.push_back(temp);
     }
     return dungeon;
 }
-
-/*void fillDungeon(vector<Room>& newDungeon, Player monk){
-    int dungeonSize;
-    int roomCounter = 0;
-    if (monk.getDifficulty() == 1){
-        dungeonSize = 10;
-    }else if (monk.getDifficulty() == 2){
-        dungeonSize = 15;
-    }else if (monk.getDifficulty() == 3){
-        dungeonSize = 20;
-    }
-    for(int i=1; i<=dungeonSize; i++){
-        int monsterSpawn = randNum(1,10);
-        bool monster;
-        if(monsterSpawn <= 5){
-            monster = true;
-        }else if(monsterSpawn > 5){
-            monster = false;
-        }
-        string roomName = "Room ";
-        roomName += std::to_string(roomCounter);
-        roomCounter++;
-        Room room(roomName,randNum(1,3), monster);
-        newDungeon.push_back(room);
-    }
-    //Adds Treasure Room at the end
-    Room room("Treasure Room",4, false);
-    newDungeon.push_back(room);
-}
-void printDungeon(const vector<Room>& newDungeon){
-    for(unsigned int i=0; i < newDungeon.size(); i++){
-        cout << "Dungeon:" << endl;
-        cout << "Room name: " << newDungeon[i].getName() << " Room Type: " << newDungeon[i].getType() << " Has Monsters: " << newDungeon[i].isMonster() << endl;
-    }
-}*/
