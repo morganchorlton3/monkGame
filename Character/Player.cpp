@@ -2,6 +2,7 @@
 // Created by morgan on 08/03/2019.
 //
 
+#include <iostream>
 #include "Player.h"
 
 const std::string &Player::getName() const {
@@ -26,6 +27,11 @@ int Player::getHealth() const {
 
 void Player::setHealth(int health) {
     Player::health = health;
+}
+void Player::print_()
+{
+    cout << "---  Player  ---" << endl;
+    cout << "Health: " << health << endl;
 }
 
 Player::Player() {}

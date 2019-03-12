@@ -9,6 +9,7 @@
 using namespace std;
 class Weapon {
 public:
+    Weapon();
 
     Weapon(int id, const string &name, const string &type, int attackDamage);
 
@@ -28,10 +29,10 @@ public:
 
     void setAttackDamage(int attackDamage);
 
-private:
     int id;
     string name, type;
     int attackDamage; /* this is a value out of 5 and that is how much deal the weapon will deal*/
+
 };
 
 

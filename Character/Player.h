@@ -5,17 +5,16 @@
 #ifndef MONK_PLAYER_H
 #define MONK_PLAYER_H
 #include <string>
+#include "../Tools/Weapon.h"
 
 class Player {
     std::string Name;
     int difficulty, health;
 
+
 public:
     Player();
 
-    Player(const std::string &Name, int difficulty, int health);
-
-public:
     const std::string &getName() const;
 
     void setName(const std::string &Name);
@@ -27,6 +26,8 @@ public:
     int getHealth() const;
 
     void setHealth(int health);
+
+    void print_();
 };
 
 

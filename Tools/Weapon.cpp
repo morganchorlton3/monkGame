@@ -2,10 +2,14 @@
 // Created by morga on 10/03/2019.
 //
 
+#include <iostream>
 #include "Weapon.h"
 
+
+Weapon::Weapon() {}
+
 Weapon::Weapon(int id, const string &name, const string &type, int attackDamage) : id(id), name(name), type(type),
-                                                                           attackDamage(attackDamage) {}
+                                                                                   attackDamage(attackDamage) {}
 
 int Weapon::getId() const {
     return id;
@@ -23,14 +27,6 @@ void Weapon::setName(const string &name) {
     Weapon::name = name;
 }
 
-int Weapon::getAttackDamage() const {
-    return attackDamage;
-}
-
-void Weapon::setAttackDamage(int attackDamage) {
-    Weapon::attackDamage = attackDamage;
-}
-
 const string &Weapon::getType() const {
     return type;
 }
@@ -39,3 +35,10 @@ void Weapon::setType(const string &type) {
     Weapon::type = type;
 }
 
+int Weapon::getAttackDamage() const {
+    return attackDamage;
+}
+
+void Weapon::setAttackDamage(int attackDamage) {
+    Weapon::attackDamage = attackDamage;
+}
