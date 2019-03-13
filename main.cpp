@@ -18,6 +18,7 @@ void setPlayerWeapon(const vector<Weapon>& weaponList,Player monk);
 vector < vector <Room> > generateDungeon();
 void printDungeon(vector< vector<Room> > &dungeon);
 void printRoomEmpty();
+void printCurrentRoom(int x, int y);
 void startGame(const vector<Room>&, Player monk);
 
 int main() {
@@ -26,21 +27,18 @@ int main() {
     cout << "---  Monk Created  ---" << endl;
     cout << "---  Generating Dungeon  ---" << endl;
     vector <vector <Room> >  dungeon  = generateDungeon();// Generated the dungeon's rooms
-    //printDungeon(dungeon); //Prints the dungeon on screen
-    Draw Drawer = Draw();
-    Drawer.eLeft();
-    Drawer.eLeftRight();
-    Drawer.eTopLeft();
-    Drawer.eRight();
-    Drawer.eLeftRight();
+    printDungeon(dungeon);
     cout << "---  Dungeon Complete  ---" << endl;
+    int x, y;
+    x = 4;
+    y = 0;
+    printCurrentRoom(x,y);
     //startGame(dungeon, *monk);
     return 0;
 }
 int randNum(int min, int max){
     return rand() % (max - min + 1) + min;
 }
-
 Player Welcome(){
     string input;
     int diff;
@@ -104,7 +102,7 @@ vector < vector <Room> > generateDungeon(){
     }
     return dungeon;
 }
-void printDungeon(vector< vector<Room> > &dungeon){
+void printDungeon(vector< vector<Room> > & dungeon){
     int roomCount = 0;
     cout << "---------  Dungeon  ---------" << endl;
     for(int i = 0; i < dungeon.size(); i++){
@@ -121,18 +119,36 @@ void printDungeon(vector< vector<Room> > &dungeon){
 void startGame(const vector<Room>& dungeon, Player monk) {
     string name;
     int health;
+    bool endGame;
     name = monk.getName();
     health = monk.getHealth();
-    for(unsigned int i=0; i < dungeon.size(); i++){
-        cout << "you have entered the room " << endl;
-        /*if(checkMonster) {
-            string play;
-            cout << "There is a Monster in the room" << endl;
-            cout << "How do you want to play: ";
-            cin >> play;
-            if(play == "a"){
-
-            }
-        }*/
+    monk.setX(0);
+    monk.setY(0);
+    while (!endGame){
+        //Check if monster Room
+        printCurrentRoom(monk.getX(), monk.getY());
+        cout << "Choose your direction" << endl;
+    }
+}
+void printCurrentRoom(int x, int y){
+    Draw Drawer = Draw();
+    if(x == 0 & y == 0){
+        Drawer.eTopRight();
+    }else if (x == 0 & y == 4){
+        Drawer.eTopLeft();
+    }else if (x == 0){
+        Drawer.eTopLeftRight();
+    }else if (x == 1 & y == 0 || x == 2 & y == 0 || x == 3 & y == 0){
+        Drawer.eRight();
+    }else if(x == 4 & y == 0){
+        Drawer.eBottomRight();
+    }else if (x == 4 & y == 1 || x == 4 & y == 2 || x == 4 & y == 3){
+        Drawer.eBottomBoth();
+    }else if (x == 4 & y == 4){
+        Drawer.eBottomLeft();
+    }else if (x == 1 & y == 4 || x == 2 & y == 4 || x == 3 & y == 4){
+        Drawer.eLeft();
+    }else{
+        Drawer.eCenterRoom();
     }
 }

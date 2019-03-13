@@ -28,10 +28,22 @@ int Player::getHealth() const {
 void Player::setHealth(int health) {
     Player::health = health;
 }
-void Player::print_()
-{
-    cout << "---  Player  ---" << endl;
-    cout << "Health: " << health << endl;
+
+int Player::getX() const {
+    return x;
+}
+
+void Player::setX(int x) {
+    Player::x = x;
+}
+
+int Player::getY() const {
+    return y;
+}
+
+void Player::setY(int y) {
+    Player::y = y;
 }
 
 Player::Player() {}
+

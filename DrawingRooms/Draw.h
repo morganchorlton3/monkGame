@@ -9,19 +9,23 @@
 class Draw {
 public:
     Draw();
-
     void topWallSolid();
     void topWallEnterance();
     void sideWall(int rowNo);
     void sideWallwithPlayer();
+    void sideWallwithMonster();
     void sideWallEnteranceLeft();
     void sideWallEnteranceRight();
     void sideWallEnteranceBoth();
     void eTopLeft();
+    void eTopRight();
     void eTopLeftRight();
     void eLeft();
     void eRight();
-    void eLeftRight();
+    void eCenterRoom();
+    void eBottomRight();
+    void eBottomLeft();
+    void eBottomBoth();
 
 };
 

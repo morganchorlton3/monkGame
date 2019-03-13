@@ -9,7 +9,7 @@
 
 class Player {
     std::string Name;
-    int difficulty, health;
+    int difficulty, health, x, y;
 
 
 public:
@@ -27,7 +27,14 @@ public:
 
     void setHealth(int health);
 
-    void print_();
+    int getX() const;
+
+    void setX(int x);
+
+    int getY() const;
+
+    void setY(int y);
+
 };
 
 
