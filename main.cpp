@@ -4,6 +4,8 @@
 #include "Dungon/Room.h"
 #include "Tools/Weapon.h"
 #include "DrawingRooms/Draw.h"
+#include "DrawingRooms/MonsterDraw.h"
+#include "DrawingRooms/TreasureDraw.h"
 #include <sstream>
 #include <cstdlib>
 #include <ctime>
@@ -18,27 +20,28 @@ void setPlayerWeapon(const vector<Weapon>& weaponList,Player monk);
 vector < vector <Room> > generateDungeon();
 void printDungeon(vector< vector<Room> > &dungeon);
 void printRoomEmpty();
-void printCurrentRoom(int x, int y);
-void startGame(const vector<Room>&, Player monk);
+void printCurrentRoom(Room currentRoom);
+void printCurrentMonsterRoom(Room currentRoom);
+void printCurrentTreasureRoom(Room currentRoom);
+void startGame(const vector< vector <Room> > &, Player monk);
 
 int main() {
     srand((unsigned)time(NULL));//Sets seed for random generator
-    //Player *monk = new Player(Welcome());
+    Player *monk = new Player(Welcome());
     cout << "---  Monk Created  ---" << endl;
     cout << "---  Generating Dungeon  ---" << endl;
     vector <vector <Room> >  dungeon  = generateDungeon();// Generated the dungeon's rooms
     printDungeon(dungeon);
     cout << "---  Dungeon Complete  ---" << endl;
-    int x, y;
-    x = 4;
-    y = 0;
-    printCurrentRoom(x,y);
-    //startGame(dungeon, *monk);
+    cout << "---  Starting Game  ---" << endl;
+    startGame(dungeon, *monk);
     return 0;
 }
+
 int randNum(int min, int max){
     return rand() % (max - min + 1) + min;
 }
+
 Player Welcome(){
     string input;
     int diff;
@@ -60,6 +63,8 @@ Player Welcome(){
     }else if (monk.getDifficulty() == 3){
         monk.setHealth(10);
     }
+    monk.setX(0);
+    monk.setY(0);
     cout << "Welcome to the Game " << monk.getName() << ", You have chose to play with a difficulty level of " << monk.getDifficulty() << endl;
     return monk;
 }
@@ -95,8 +100,14 @@ vector < vector <Room> > generateDungeon(){
     for (int i = 0; i < 5; i++){
         vector<Room>temp;
         for (int j = 0; j < 5; j++){
-            Room room = Room("name", randNum(1,2) ,i,j);
-            temp.push_back(room);
+            int rand = randNum(1,2);
+            if(rand == 1) {
+                Room room = Room("name", randNum(1, 2), i, j);
+                temp.push_back(room);
+            }else if(rand == 2){
+                Room room2 = Room("No Room", 3 ,i,j);
+                temp.push_back(room2);
+            }
         }
         dungeon.push_back(temp);
     }
@@ -116,22 +127,11 @@ void printDungeon(vector< vector<Room> > & dungeon){
     cout << "Room count: " << roomCount << endl;
     cout << "---------  Dungeon  ---------" << endl;
 }
-void startGame(const vector<Room>& dungeon, Player monk) {
-    string name;
-    int health;
-    bool endGame;
-    name = monk.getName();
-    health = monk.getHealth();
-    monk.setX(0);
-    monk.setY(0);
-    while (!endGame){
-        //Check if monster Room
-        printCurrentRoom(monk.getX(), monk.getY());
-        cout << "Choose your direction" << endl;
-    }
-}
-void printCurrentRoom(int x, int y){
+void printCurrentRoom(Room currentRoom){
     Draw Drawer = Draw();
+    int x,y;
+    x = currentRoom.getX();
+    y = currentRoom.getY();
     if(x == 0 & y == 0){
         Drawer.eTopRight();
     }else if (x == 0 & y == 4){
@@ -150,5 +150,137 @@ void printCurrentRoom(int x, int y){
         Drawer.eLeft();
     }else{
         Drawer.eCenterRoom();
+    }
+}
+
+void printCurrentMonsterRoom(Room currentRoom){
+    MonsterDraw MDrawer = MonsterDraw();
+    int x,y;
+    x = currentRoom.getX();
+    y = currentRoom.getY();
+    if(x == 0 & y == 0){
+        MDrawer.eTopRight();
+    }else if (x == 0 & y == 4){
+        MDrawer.eTopLeft();
+    }else if (x == 0){
+        MDrawer.eTopLeftRight();
+    }else if (x == 1 & y == 0 || x == 2 & y == 0 || x == 3 & y == 0){
+        MDrawer.eRight();
+    }else if(x == 4 & y == 0){
+        MDrawer.eBottomRight();
+    }else if (x == 4 & y == 1 || x == 4 & y == 2 || x == 4 & y == 3){
+        MDrawer.eBottomBoth();
+    }else if (x == 4 & y == 4){
+        MDrawer.eBottomLeft();
+    }else if (x == 1 & y == 4 || x == 2 & y == 4 || x == 3 & y == 4){
+        MDrawer.eLeft();
+    }else{
+        MDrawer.eCenterRoom();
+    }
+}
+
+void printCurrentTreasureRoom(Room currentRoom){
+    TreasureDraw TDrawer = TreasureDraw();
+    int x,y;
+    x = currentRoom.getX();
+    y = currentRoom.getY();
+    if(x == 0 & y == 0){
+        TDrawer.eTopRight();
+    }else if (x == 0 & y == 4){
+        TDrawer.eTopLeft();
+    }else if (x == 0){
+        TDrawer.eTopLeftRight();
+    }else if (x == 1 & y == 0 || x == 2 & y == 0 || x == 3 & y == 0){
+        TDrawer.eRight();
+    }else if(x == 4 & y == 0){
+        TDrawer.eBottomRight();
+    }else if (x == 4 & y == 1 || x == 4 & y == 2 || x == 4 & y == 3){
+        TDrawer.eBottomBoth();
+    }else if (x == 4 & y == 4){
+        TDrawer.eBottomLeft();
+    }else if (x == 1 & y == 4 || x == 2 & y == 4 || x == 3 & y == 4){
+        TDrawer.eLeft();
+    }else{
+        TDrawer.eCenterRoom();
+    }
+}
+
+void startGame(const vector< vector <Room> > & dungeon, Player monk) {
+    string name;
+    int health;
+    bool runGame = true;
+    name = monk.getName();
+    health = monk.getHealth();
+    while (runGame) {
+        int x = monk.getX();
+        int y = monk.getY();
+        cout << monk.getX() << ", " << monk.getY() << endl;
+        Room currentRoom = dungeon[x][y]; // sets start room to X=0 , Y=0
+        switch (currentRoom.getType()) {
+            case 1:
+                printCurrentRoom(currentRoom);
+                break;
+            case 2:
+                printCurrentMonsterRoom(currentRoom);
+                break;
+            case 3:
+                printCurrentTreasureRoom(currentRoom);
+                cout << endl << "---  Congratulations You Won!  ---" << endl;
+                break;
+            default:
+                cout << "Error Printing room Invalid room type" << endl;
+                break;
+        }
+        cout << "Your Move: " << endl;
+        string move;
+        bool moveBool = true;
+        cin >> move;
+        while(moveBool){
+           if(move == "w" || move == "W" ){
+               int x = monk.getX();
+               switch (x){
+                   case 0:
+                       cout << "You can't move up" << endl;
+                       break;
+                   default:
+                       monk.setX(x-1);
+                       moveBool = false;
+                       break;
+               }
+            }else if(move == "s" || move == "S" ){
+               int x = monk.getX();
+               switch (x){
+                   case 5:
+                       cout << "You can't move down" << endl;
+                       break;
+                   default:
+                       monk.setX(x+1);
+                       moveBool = false;
+                       break;
+               }
+           }else if(move == "a" || move == "A" ){
+               int y = monk.getY();
+               switch (y){
+                   case 0:
+                       cout << "You can't move left" << endl;
+                       break;
+                   default:
+                       monk.setX(y-1);
+                       moveBool = false;
+                       break;
+               }
+           }else if(move == "d" || move == "D" ){
+               int y = monk.getY();
+               switch (y){
+                   case 5:
+                       cout << "You can't move right" << endl;
+                       break;
+                   default:
+                       monk.setY(y+1);
+                       moveBool = false;
+                       break;
+               }
+           }
+        }
     }
 }

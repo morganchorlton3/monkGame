@@ -85,6 +85,15 @@ void Draw::sideWallwithMonster(){
         cout << " ";
     cout << "*" << endl;
 }
+void Draw::sideWallwithTreasure(){
+    cout << "*";
+    for (int column = 0; column < 13; ++column)
+        cout << " ";
+    cout << "T";
+    for (int column = 0; column < 14; ++column)
+        cout << " ";
+    cout << "*" << endl;
+}
 
 void Draw::eTopLeft() {
     topWallSolid();

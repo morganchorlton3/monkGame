@@ -14,6 +14,7 @@ public:
     void sideWall(int rowNo);
     void sideWallwithPlayer();
     void sideWallwithMonster();
+    void sideWallwithTreasure();
     void sideWallEnteranceLeft();
     void sideWallEnteranceRight();
     void sideWallEnteranceBoth();
