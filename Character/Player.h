@@ -9,7 +9,7 @@
 
 class Player {
     std::string Name;
-    int difficulty, health, x, y;
+    int difficulty, health, maxHealth, attackDamage, x, y;
 
 
 public:
@@ -25,7 +25,15 @@ public:
 
     int getHealth() const;
 
+    int getAttackDamage() const;
+
+    void setAttackDamage(int attackDamage);
+
     void setHealth(int health);
+
+    int getMaxHealth() const;
+
+    void setMaxHealth(int macHealth);
 
     int getX() const;
 
@@ -34,6 +42,8 @@ public:
     int getY() const;
 
     void setY(int y);
+
+    void movePlayer(Player monk);
 
 };
 

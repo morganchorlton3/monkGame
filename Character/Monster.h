@@ -11,23 +11,32 @@
 
 class Monster {
 public:
-    Monster(int health, std::string name, const Weapon &weapon);
+
+    int health, attackDamage;
+    std::string name;
+    Weapon weapon;
+    bool alive;
+
+    Monster();
 
     int getHealth() const;
 
     void setHealth(int health);
 
+    int getAttackDamage() const;
+
+    void setAttackDamage(int attackDamage);
+
     const std::string &getName() const;
 
     void setName(const std::string &name);
 
+    bool isAlive() const;
+
+    void setAlive(bool alive);
+
     const Weapon &getWeapon() const;
 
     void setWeapon(const Weapon &weapon);
-
-private:
-    int health;
-    std::string name;
-    Weapon weapon;
 };
 #endif //MONK_MONSTER_H
