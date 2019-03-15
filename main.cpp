@@ -7,6 +7,7 @@
 #include "DrawingRooms/MonsterDraw.h"
 #include "DrawingRooms/TreasureDraw.h"
 #include "Character/Monster.h"
+#include "Dungon/Coordinates.h"
 #include <sstream>
 #include <cstdlib>
 #include <ctime>
@@ -28,9 +29,13 @@ void startGame(const vector< vector <Room> > &, Player monk);
 
 void endGame();
 
-void movePlayer(Player monk);
+void movePlayer(Player *monk);
 
-void printCurrentRoomCo(const Player monk);
+void printCurrentRoomCo(const Player * monk);
+
+void runGame(vector<vector<Room>> dungeon, Player * monk);
+
+void playerCombat(Player * monk, Monster currentMonster);
 
 int main() {
     srand((unsigned)time(NULL));//Sets seed for random generator
@@ -38,10 +43,13 @@ int main() {
     cout << "---  Monk Created  ---" << endl;
     cout << "---  Generating Dungeon  ---" << endl;
     vector <vector <Room> >  dungeon  = generateDungeon();// Generated the dungeon's rooms
+    vector<Coordinates> coordsPath;
     printDungeon(dungeon);
     cout << "---  Dungeon Complete  ---" << endl;
     cout << "---  Starting Game  ---" << endl;
-    startGame(dungeon, *monk);
+    Room currentRoom = dungeon[0][0];
+    printCurrentMonsterRoom(currentRoom);
+    runGame(dungeon, monk);
     return 0;
 }
 
@@ -210,11 +218,132 @@ void printCurrentTreasureRoom(Room currentRoom){
     }
 }
 
-void printCurrentRoomCo(Player monk) {
-    cout << " Coordinates: ( X " << monk.getX() << ", Y " << monk.getY() << " )" << endl;
+void printCurrentRoomCo(Player * monk) {
+    cout << " Coordinates: ( X " << monk->getX() << ", Y " << monk->getY() << " )" << endl;
+}
+void runGame(vector<vector<Room>> dungeon, Player * monk){
+    Monster currentMonster = Monster();
+    currentMonster.setHealth(10);
+    currentMonster.setAttackDamage(randNum(1,4));
+    while (monk->isAlive()) {
+        movePlayer(monk);
+        Room currentRoom = dungeon[monk->getX()][monk->getY()];
+        if (currentRoom.getType() == 1) {
+            printCurrentRoomCo(monk);
+            printCurrentRoom(currentRoom);
+        } else if (currentRoom.getType() == 2) {
+            printCurrentRoomCo(monk);
+            printCurrentMonsterRoom(currentRoom);
+            playerCombat(monk, currentMonster);
+        }
+    }
+    cout << "You have died!" << endl;
+    endGame();
 }
 
-void startGame(const vector< vector <Room> > & dungeon, Player monk) {
+void playerCombat(Player * monk, Monster currentMonster) {
+    while (currentMonster.isAlive()) {
+        cout << "There is a monster in the room" << endl;
+        cout << "Your Health: " << monk->getHealth() << " HP." << endl;
+        cout << "Monster's health: " << currentMonster.getHealth() << " HP." << endl;
+        cout << "would you like to attack a or defend d :" << endl;
+        string move;
+        cin >> move;
+        if (move == "a") {
+            int WorL = randNum(0, 1);
+            if (WorL == 0) {
+                //int attack = randNum(1, monk.getAttackDamage());
+                int attack = monk->getAttackDamage();
+                cout << "You attacked the monster, you dealt " << attack << " points of damage to it." << endl;
+                int monsterHp = currentMonster.getHealth() - attack;
+                currentMonster.setHealth(monsterHp);
+                if (currentMonster.getHealth() - attack <= 0) {
+                    cout << "You Killed the Monster, You may progress" << endl;
+                    currentMonster.setAlive(false);
+                    break;
+                }
+                break;
+            } else if (WorL == 1) {
+                int attack = randNum(1, currentMonster.getAttackDamage());
+                if (monk->getHealth() - attack <= 0) {
+                    cout << "You Died" << endl;
+                    endGame();
+                }
+                cout << "the monster attacked you and dealt " << attack << " points of damage." << endl;
+                monk->setHealth(monk->getHealth() - attack);
+                break;
+            }
+        }
+    }
+}
+/*void runGame(vector<vector<Room>> dungeon, Player monk) {
+    while(monk.isAlive()){
+        /*Room currentRoom = movePlayer(dungeon, monk); // gets current Room
+        cout << "Your current Health is: " << monk.getHealth() << endl;
+        if (currentRoom.getType() == 1) {
+            printCurrentRoomCo(monk);
+            printCurrentRoom(currentRoom);
+        }else if (currentRoom.getType() == 2) {
+            printCurrentRoomCo(monk);
+            printCurrentMonsterRoom(currentRoom);
+        }
+    }
+    Monster currentMonster = Monster();
+    currentMonster.setHealth(5);
+    currentMonster.setAttackDamage(randNum(1,4));
+    int x,y;
+    x = monk.getX();
+    y = monk.getY();
+    cout << x << " " << y << endl;
+    Room currentRoom = dungeon[x][y]; // sets start room to monks position
+    cout << "Your current Health is: " << monk.getHealth() << endl;
+    if (currentRoom.getType() == 1) {
+        printCurrentRoomCo(monk);
+        printCurrentRoom(currentRoom);
+        movePlayer(monk);
+        return;
+    } else if (currentRoom.getType() == 2) {
+        movePlayer(monk);
+        printCurrentRoomCo(monk);
+        printCurrentMonsterRoom(currentRoom);
+        string move;
+        while (currentMonster.isAlive()) {
+            cout << "There is a monster in the room" << endl;
+            cout << "Your Health: " << monk.getHealth() << " HP." << endl;
+            cout << "Monster's health: " << currentMonster.getHealth() << " HP." << endl;
+            cout << "would you like to attack a or defend d :" << endl;
+            cin >> move;
+            if (move == "a") {
+                int WorL = randNum(0, 1);
+                if (WorL == 0) {
+                    //int attack = randNum(1, monk.getAttackDamage());
+                    int attack = monk.getAttackDamage();
+                    if (currentMonster.getHealth() - attack <= 0) {
+                        cout << "You Killed the Monster, You may progress" << endl;
+                        currentMonster.setAlive(false);
+                        printCurrentRoom(currentRoom);
+                        return;
+                    }
+                    cout << "You attacked the monster, you dealt " << attack << " points of damage to it." << endl;
+                    int monsterHp = currentMonster.getHealth() - attack;
+                    currentMonster.setHealth(monsterHp);
+                    break;
+                } else if (WorL == 1) {
+                    int attack = randNum(1, currentMonster.getAttackDamage());
+                    if (monk.getHealth() - attack <= 0) {
+                        cout << "You Died" << endl;
+                        endGame();
+                    }
+                    cout << "the monster attacked you and dealt " << attack << " points of damage." << endl;
+                    monk.setHealth(monk.getHealth() - attack);
+                    break;
+                }
+            }
+        }
+    }
+}*/
+
+/*void startGame(const vector< vector <Room> > & dungeon, Player * monk) {
     string name;
     int hp;
     bool runGame = true;
@@ -233,50 +362,6 @@ void startGame(const vector< vector <Room> > & dungeon, Player monk) {
         if (currentRoom.getType() == 1) {
             printCurrentRoomCo(monk);
             printCurrentRoom(currentRoom);
-            cout << "Your Move: " << endl;
-            string move;
-            cin >> move;
-            if (move == "w" || move == "W") {
-                int x = monk.getX();
-                switch (x) {
-                    case 0:
-                        cout << "You can't move up" << endl;
-                        break;
-                    default:
-                        monk.setX(x - 1);
-                        break;
-                }
-            } else if (move == "s" || move == "S") {
-                int x = monk.getX();
-                switch (x) {
-                    case 5:
-                        cout << "You can't move down" << endl;
-                        break;
-                    default:
-                        monk.setX(x + 1);
-                        break;
-                }
-            } else if (move == "a" || move == "A") {
-                int y = monk.getY();
-                switch (y) {
-                    case 0:
-                        cout << "You can't move left" << endl;
-                        break;
-                    default:
-                        monk.setX(y - 1);
-                        break;
-                }
-            } else if (move == "d" || move == "D") {
-                int y = monk.getY();
-                switch (y) {
-                    case 5:
-                        cout << "You can't move right" << endl;
-                        break;
-                    default:
-                        monk.setY(y + 1);
-                        break;
-                }
-            }
         } else if (currentRoom.getType() == 2) {
             printCurrentMonsterRoom(currentRoom);
             string move;
@@ -360,49 +445,49 @@ void startGame(const vector< vector <Room> > & dungeon, Player monk) {
         }
     }
 }
-
-void movePlayer(Player monk) {
-    cout << "Your Move: " << endl;
+*/
+void movePlayer(Player * monk) {
+    cout << "Choose what direction you want to move in : " << endl;
     string move;
     cin >> move;
     if (move == "w" || move == "W") {
-        int x = monk.getX();
+        int x = monk->getX();
         switch (x) {
             case 0:
                 cout << "You can't move up" << endl;
                 break;
             default:
-                monk.setX(x - 1);
+                monk->setX(x - 1);
                 break;
         }
     } else if (move == "s" || move == "S") {
-        int x = monk.getX();
+        int x = monk->getX();
         switch (x) {
             case 5:
-                cout << "You can't move down" << endl;
+                cout << "You can't move left" << endl;
                 break;
             default:
-                monk.setX(x + 1);
+                monk->setX(x + 1);
                 break;
         }
     } else if (move == "a" || move == "A") {
-        int y = monk.getY();
+        int y = monk->getY();
         switch (y) {
             case 0:
                 cout << "You can't move left" << endl;
                 break;
             default:
-                monk.setX(y - 1);
+                monk->setX(y - 1);
                 break;
         }
     } else if (move == "d" || move == "D") {
-        int y = monk.getY();
+        int y = monk->getY();
         switch (y) {
             case 5:
                 cout << "You can't move right" << endl;
                 break;
             default:
-                monk.setY(y + 1);
+                monk->setY(y + 1);
                 break;
         }
     }

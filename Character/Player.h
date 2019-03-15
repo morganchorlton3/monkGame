@@ -10,6 +10,11 @@
 class Player {
     std::string Name;
     int difficulty, health, maxHealth, attackDamage, x, y;
+    bool alive;
+public:
+    bool isAlive() const;
+
+    void setAlive(bool alive);
 
 
 public:
