@@ -110,4 +110,12 @@ void Player::movePlayer(Player monk) {
     }
 }
 
+bool Player::isAlive() const {
+    return alive;
+}
+
+void Player::setAlive(bool alive) {
+    Player::alive = alive;
+}
+
 

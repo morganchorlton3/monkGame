@@ -10,7 +10,7 @@ using namespace std;
 class Room {
 public:
 
-    Room(const string &name, int type, int X, int Y);
+    Room(const string &name, int type, int X, int Y, bool visited);
 
     const string &getName() const;
 
@@ -28,9 +28,14 @@ public:
 
     void setY(int Y);
 
+    bool isVisited() const;
+
+    void setVisited(bool visited);
+
 private:
     string name;
     int type, X, Y;
+    bool visited;
 
 };
 
