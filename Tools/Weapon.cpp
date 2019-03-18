@@ -42,3 +42,9 @@ int Weapon::getAttackDamage() const {
 void Weapon::setAttackDamage(int attackDamage) {
     Weapon::attackDamage = attackDamage;
 }
+
+void Weapon::print(){
+    cout << "   Name: " << name << endl;
+    cout << "   Type: " << type << endl;
+    cout << "   Attack Damage: " << attackDamage << endl;
+}

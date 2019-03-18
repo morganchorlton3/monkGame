@@ -6,27 +6,34 @@
 #define MONK_DRAW_H
 
 
+#include "../Character/Player.h"
+#include "../Dungon/Room.h"
+#include <iostream>
+#include <string>
+
+using namespace std;
+
 class Draw {
 public:
     Draw();
     void topWallSolid();
-    void topWallEnterance();
+    void topWallEntrance();
     void sideWall(int rowNo);
-    void sideWallwithPlayer();
-    void sideWallwithMonster();
-    void sideWallwithTreasure();
-    void sideWallEnteranceLeft();
-    void sideWallEnteranceRight();
-    void sideWallEnteranceBoth();
-    void eTopLeft();
-    void eTopRight();
-    void eTopLeftRight();
-    void eLeft();
-    void eRight();
-    void eCenterRoom();
-    void eBottomRight();
-    void eBottomLeft();
-    void eBottomBoth();
+    void sideWallWithPlayer();
+    void sideWallWithObject(string letter);
+    void sideWallEntranceLeft();
+    void sideWallEntranceRight();
+    void sideWallEntranceBoth();
+    void eTopLeft(string letter);
+    void eTopRight(string letter);
+    void eTopRightBottom(string letter);
+    void eTopLeftBottom(string letter);
+    void eTopLeftRight(string letter);
+    void eCenterRoom(string letter);
+    void eBottomRight(string letter);
+    void eBottomBoth(string letter);
+    void printRoom(Room currentRoom, Player * monk);
+    void printRoomWithObject(Room currentRoom, Player * monk, string letter);
 
 };
 

@@ -8,7 +8,7 @@
 #include "../Tools/Weapon.h"
 
 class Player {
-    std::string Name;
+    std::string Name, WeaponName;
     int difficulty, health, maxHealth, attackDamage, x, y;
     bool alive;
 public:
@@ -48,7 +48,12 @@ public:
 
     void setY(int y);
 
-    void movePlayer(Player monk);
+    const string &getWeaponName() const;
+
+    void setWeaponName(const string &WeaponName);
+
+    void print();
+
 
 };
 
