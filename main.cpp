@@ -1,5 +1,7 @@
 #include <iostream>
 #include <String>
+#include <fstream>
+#include <iterator>
 #include "Character/Player.h"
 #include "Dungon/Room.h"
 #include "Tools/Weapon.h"
@@ -18,11 +20,11 @@ int randNum(int min, int max);
 
 void pauseConsole(int length);
 
-Player Welcome(vector < Weapon > weaponList);
+Player Welcome();
 
 vector < Weapon > createWeapons();
 
-void setPlayerWeapon(vector<Weapon> weaponList,Player monk);
+Weapon getPlayerWeapon(vector<Weapon> weaponList);
 
 vector < vector <Room> > generateDungeon();
 
@@ -36,47 +38,97 @@ void playerCombat(Player * monk, Monster currentMonster);
 
 void runGame(vector<vector<Room>> dungeon, Player * monk);
 
-void endGame();
+vector < string > playerLog(Player * monk, string text);
+
+void printWinLog(Player * monk);
+
+void printLoseLog(Player * monk);
+
+void printLog(Player * monk);
+
+void endGame(Player *monk);
+
+bool howToPlay();
 
 int main() {
-    srand((unsigned)time(NULL));//Sets seed for random generator
-    vector < Weapon > weaponList = createWeapons();
-    Player *monk = new Player(Welcome(weaponList));
-    cout << endl << "---  Generating Dungeon  ---" << endl << endl;
-    cout << "   Generating";
-    pauseConsole(1);
-    vector <vector <Room> >  dungeon  = generateDungeon();// Generated the dungeon's rooms
-    //printDungeon(dungeon);
-    cout << endl << "---  Dungeon Complete  ---" << endl << endl;;
-    cout << "   Welcome to the Game " << monk->getName() << ", You have chose to play with a difficulty level of " << monk->getDifficulty() << endl;
-    cout << endl << "---  Starting Game  ---" << endl << endl;;
-    Room currentRoom = dungeon[0][0];
+    srand((unsigned) time(NULL));//Sets seed for random generator
+    if (howToPlay()) {
+        vector<Weapon> weaponList = createWeapons();
+        Player *monk = new Player(Welcome());
+        Weapon currentWeapon = getPlayerWeapon(weaponList);
+        monk->setWeapon(currentWeapon);
+        monk->setWeaponName(currentWeapon.getName());
+        monk->setAttackDamage(currentWeapon.getAttackDamage());
+        cout << endl << "---  Generating Dungeon  ---" << endl << endl;
+        cout << "   Generating";
+        pauseConsole(1);
+        vector<vector<Room> > dungeon = generateDungeon();// Generated the dungeon's rooms
+        monk->setDungeonSize(dungeon.size() * 5);
+        //printDungeon(dungeon);
+        cout << endl << "---  Dungeon Complete  ---" << endl << endl;;
+        cout << "   Welcome to the Game " << monk->getName() << ", You have chose to play on difficulty level "
+             << monk->getDifficulty() << endl;
+        cout << endl << "---  Starting Game  ---" << endl << endl;;
+        Room currentRoom = dungeon[0][0];
+        string yorn;
+        cout << "   Are you ready to start? Y or N" << endl;
+        getline(cin, yorn);
+        while (true) {
+            if (yorn == "y" || yorn == "Y") {
+                cout << "Game Starting in " << endl;
+                chrono::seconds duration(1);
+                this_thread::sleep_for(duration);
+                cout << "3" << endl;
+                this_thread::sleep_for(duration);
+                cout << "2" << endl;
+                this_thread::sleep_for(duration);
+                cout << "1" << endl;
+                system("cls");
+                runGame(dungeon, monk);
+                break;
+            } else if (yorn == "n" || yorn == "N") {
+                cout << "   Thank you for playing Monk!" << endl;
+                break;
+            } else {
+                cout << "   Please either enter Y or N" << endl;
+                getline(cin, yorn);
+            }
+        }
+        endGame(monk);
+    }else{
+        system("pause");
+        exit(0);
+    }
+}
+
+bool howToPlay() {
+    cout << "How to Play: " << endl << endl;
+    cout << "   The aim of the game is to reach the treasure room alive along the way you will enter rooms with monster in that you have to defeat." << endl;
+    cout << "Player Movement: " << endl << endl;
+    cout << "   Move around the dungeon by using W,A,S and D." << endl;
+    cout << "   If you are in an empty room you can heal with H." << endl << endl;
+    cout << "Player Combat: " << endl << endl;
+    cout << "   You can attack with A and there will there is a 50/50 chance your attack will be successful." << endl;
+    cout << "   You can defend with D and there will be a 50% chance you will heal a random amount between 1 and 3." << endl << endl;
+    cout << "The Dungeon: " << endl << endl;
+    cout << "   Once you enter a room with a monster you must defeat the monster to progress." << endl;
+    cout << "   Once you reach the treasure room you will win the game. " << endl << endl;
     string yorn;
-    cout << "   Are you ready to start? Y or N" << endl;
+    cout << "Do you understand how to play? Y or N" << endl;
     getline(cin, yorn);
     while (true){
-        if (yorn == "y" || yorn == "Y"){
-            cout << "Game Starting in " << endl;
-            chrono::seconds duration(1);
-            this_thread::sleep_for( duration );
-            cout << "3" << endl;
-            this_thread::sleep_for( duration );
-            cout << "2" << endl;
-            this_thread::sleep_for( duration );
-            cout << "1" << endl;
+        if(yorn == "Y" || yorn == "y"){
             system("cls");
-            runGame(dungeon, monk);
-            break;
-        }else if(yorn == "n" || yorn == "N") {
-            cout << "   Thank you for playing Monk!" << endl;
-            break;
+            return true;
+        }else if (yorn == "N" || yorn == "n"){
+            return false;
         }else{
-            cout << "   Please either enter Y or N" << endl;
-            getline(cin, yorn);
+            cout << "Please wither enter Y or N." << endl;
+            getline(cin,yorn);
         }
     }
-    return 0;
 }
+
 // generates a random number withing a given range
 int randNum(int min, int max){
     return rand() % (max - min + 1) + min;
@@ -93,7 +145,7 @@ void pauseConsole(int length){
     cout << "." << endl;
 }
 
-Player Welcome(vector < Weapon > weaponList){
+Player Welcome(){
     string input;
     int diff;
     cout << "   Welcome to Monk the dungeon survival game" << endl;
@@ -101,6 +153,8 @@ Player Welcome(vector < Weapon > weaponList){
     cout << "   Player Name: ";
     getline(cin, input);
     Player monk = Player(); /* Create the player */
+    monk.setRoomCounter(0);
+    monk.setKillCounter(0);
     monk.setName(input); /* set player name */
     cout << "   Please enter your difficulty 1 = easy, 2 = medium, 3 = hard ";
     getline(cin,input);
@@ -128,18 +182,18 @@ Player Welcome(vector < Weapon > weaponList){
     }
     monk.setX(0);
     monk.setY(0);
-    setPlayerWeapon(weaponList, monk);
-    monk.print();
+    vector < string > playerLog;
+    monk.setPlayerLog(playerLog);
     return monk;
 }
 
 vector < Weapon > createWeapons() {
     vector <Weapon> weaponList;
-    Weapon w1 = Weapon(0,"Blue Thunder", "Sword", 2);
+    Weapon w1 = Weapon(0,"Blue Thunder", "Sword", 3);
     weaponList.push_back(w1);
     Weapon w2 = Weapon(1,"Walking stick","Stick", 4);
     weaponList.push_back(w2);
-    Weapon w3 = Weapon(2,"Splitting Pain","Battle Axe", 3);
+    Weapon w3 = Weapon(2,"Splitting Pain","Battle Axe", 5);
     weaponList.push_back(w3);
     Weapon w4 = Weapon(3,"Ramming rampage","Hammer", 2);
     weaponList.push_back(w3);
@@ -148,18 +202,16 @@ vector < Weapon > createWeapons() {
     return weaponList;
 };
 
-void setPlayerWeapon( vector<Weapon>weaponList, Player  monk) {
+Weapon getPlayerWeapon( vector<Weapon> weaponList) {
     cout << "   Randomly Choosing your weapon";
     pauseConsole(1);
     int choice = randNum(0,4);
     Weapon currentWeapon = weaponList[choice];
-    int weaponAttack = currentWeapon.getAttackDamage();
-    monk.setWeaponName(currentWeapon.getName());
-    monk.setAttackDamage(weaponAttack);
     cout << "   Your weapon has been selected: " << endl;
     cout << "   Name: " << currentWeapon.getName() << endl;
     cout << "   Type: " << currentWeapon.getType() << endl;
     cout << "   Attack Damage: " << currentWeapon.getAttackDamage() << endl;
+    return currentWeapon;
 }
 
 vector < vector <Room> > generateDungeon(){
@@ -167,7 +219,7 @@ vector < vector <Room> > generateDungeon(){
     for (int i = 0; i < 5; i++){
         vector<Room>temp;
         for (int j = 0; j < 6; j++){
-            Room room = Room("name", randNum(1, 2), j, i, false);
+            Room room = Room("name", randNum(1, 2), j, i);
             temp.push_back(room);
         }
         dungeon.push_back(temp);
@@ -176,14 +228,14 @@ vector < vector <Room> > generateDungeon(){
     for (int k = 0; k < 5; k++){
         int decider = randNum(1, 2);
         if (decider == 1) {
-            Room room = Room("name", 3, k, 5, false);
+            Room room = Room("name", 3, k, 5);
             temp.push_back(room);
         }else {
-            Room room = Room("Treasure name", randNum(1, 2), k, 5, false);
+            Room room = Room("Treasure name", randNum(1, 2), k, 5);
             temp.push_back(room);
         }
     }
-    Room room = Room("name", 3, 5, 5, false);
+    Room room = Room("name", 3, 5, 5);
     temp.push_back(room);
     dungeon.push_back(temp);
     return dungeon;
@@ -212,7 +264,6 @@ void movePlayer(Player * monk) {
     cout << "Choose what direction you want to move in : " << endl;
     string move;
     cin >> move;
-    cout << "X : " << monk->getX() << " Y: " << monk->getY() << endl;
     if (move == "w" || move == "W") {
         int y = monk->getY();
         switch (y) {
@@ -222,6 +273,7 @@ void movePlayer(Player * monk) {
                 break;
             default:
                 monk->setY(y - 1);
+                monk->setPlayerLog(playerLog(monk, "moved UP ( X = " + to_string(monk->getX()) + " , Y = " + to_string(monk->getY()) + " )"));
                 break;
         }
     } else if (move == "s" || move == "S") {
@@ -233,6 +285,7 @@ void movePlayer(Player * monk) {
                 break;
             default:
                 monk->setY(y + 1);
+                monk->setPlayerLog(playerLog(monk, "moved DOWN ( X = " + to_string(monk->getX()) + " , Y = " + to_string(monk->getY()) + " )"));
                 break;
         }
     } else if (move == "a" || move == "A") {
@@ -244,6 +297,7 @@ void movePlayer(Player * monk) {
                 break;
             default:
                 monk->setX(x - 1);
+                monk->setPlayerLog(playerLog(monk, "moved LEFT ( X = " + to_string(monk->getX()) + " , Y = " + to_string(monk->getY()) + " )"));
                 break;
         }
     } else if (move == "d" || move == "D") {
@@ -255,62 +309,134 @@ void movePlayer(Player * monk) {
                 break;
             default:
                 monk->setX(x + 1);
+                monk->setPlayerLog(playerLog(monk, "moved RIGHT ( X = " + to_string(monk->getX()) + " , Y = " + to_string(monk->getY()) + " )"));
                 break;
         }
+    } else if (move == "h" || move == "H"){
+        int healthGain = randNum(1,4);
+        if(monk->getHealth() + healthGain >= monk->getMaxHealth()){
+            monk->setHealth(monk->getMaxHealth());
+        }else{
+            monk->setHealth(monk->getHealth() + healthGain);
+        }
+        cout << "You healed " << healthGain << endl;
+        cout << "Your current health is " << monk->getHealth() << endl;
+        monk->setPlayerLog(playerLog(monk, "  Healed ( X = " + to_string(monk->getX()) + " , Y = " + to_string(monk->getY()) + " )"));
+        monk->setPlayerLog(playerLog(monk, "  Monks Health " + to_string(monk->getHealth())));
+        movePlayer(monk);
+    }else{
+        cout << "Please either enter W,A,S or D to move or H to heal" << endl;
+        movePlayer(monk);
     }
+}
+
+vector < string > playerLog(Player * monk, string text){
+    vector < string > playerLog = monk->getPlayerLog();
+    playerLog.push_back(text);
+    return playerLog;
+}
+
+void printWinLog(Player * monk){
+    fstream file("PlayerLog.txt", ios::app); //open for output
+    file << "Congratulations " << monk->getName() <<" on defeating the dungeon " << endl;
+    file << "You completed the dungeon with a difficulty level of " << monk->getDifficulty() << endl;
+    file << "Player Statistics: " << endl << endl;
+    file << "   Health: " << monk->getHealth() << endl;
+    file << "   Weapon: " << monk->getWeaponName() << endl;
+    file << "   Attack Damage: " << monk->getAttackDamage() << endl;
+    file << "   Rooms Entered: " << monk->getRoomCounter() << endl;
+    file << "   Total Room Count: " << monk->getDungeonSize() << endl;
+    file << "   Kills: " << monk->getKillCounter() << endl << endl;
+    file.close();
+    printLog(monk);
+}
+
+void printLoseLog(Player * monk){
+    fstream file("PlayerLog.txt", ios::app); //open for output
+    file << "Commiserations " << monk->getName() <<" You lost the battle" << endl;
+    file << "Player Statistics: " << endl << endl;
+    file << "   Weapon: " << monk->getWeaponName() << endl;
+    file << "   Attack Damage: " << monk->getAttackDamage() << endl;
+    file << "   Rooms Entered: " << monk->getRoomCounter() << endl;
+    file << "   Total Room Count: " << monk->getDungeonSize() << endl;
+    file << "   Kills: " << monk->getKillCounter() << endl << endl;
+    printLog(monk);
+    file << endl << "   Thank you for Playing Monk!" << endl;
+    file.close();
+
+}
+
+void printLog(Player * monk) {
+    fstream file("PlayerLog.txt", ios::app); //open for output
+    file << "Player moves through dungeon: " << endl << endl;
+    vector < string > playerLog = monk->getPlayerLog();
+    for(int i = 0; i < playerLog.size(); i++){
+        file << "   " << playerLog[i] << endl;
+    }
+    file.close();
 }
 
 void playerCombat(Player * monk, Monster currentMonster) {
     while (currentMonster.isAlive()) {
-        cout << "There is a monster in the room" << endl;
         cout << "Your Health: " << monk->getHealth() << " HP." << endl;
-        cout << "Monster's health: " << currentMonster.getHealth() << " HP." << endl;
+        cout << "Monsters Health: " << currentMonster.getHealth() << " HP." << endl;
+        monk->setPlayerLog(playerLog(monk, "  Monks Health " + to_string(monk->getHealth())));
+        monk->setPlayerLog(playerLog(monk, "  Monsters Health " + to_string(currentMonster.getHealth())));
         cout << "would you like to attack a or defend d :" << endl;
         string move;
         cin >> move;
-        int WorL = randNum(0, 1);
-        if (move == "a") {
+        int WorL = randNum(0, 1);// 50/50 chance that the attack will work
+        if (move == "a" || move == "A") {
             if (WorL == 0) {
-                //int attack = randNum(1, monk.getAttackDamage());
                 int attack = monk->getAttackDamage();
                 cout << "You attacked the monster, you dealt " << attack << " points of damage to it." << endl;
-                int monsterHp = currentMonster.getHealth() - attack;
-                currentMonster.setHealth(monsterHp);
-                if (currentMonster.getHealth() - attack <= 0) {
+                monk->setPlayerLog(playerLog(monk, "  Monk deals " + to_string(attack) + " damage points"));
+                int monsterHp = currentMonster.getHealth() - attack; // reduces the monsters HP
+                currentMonster.setHealth(monsterHp); //sets the monsters HP
+                if (currentMonster.getHealth() <= 0) { //Checks to see if the monster has any HP left
                     cout << "You Killed the Monster, You may progress" << endl;
-                    currentMonster.setAlive(false);
+                    monk->setPlayerLog(playerLog(monk, "  Monster killed"));
+                    currentMonster.setAlive(false); // kills the monster
+                    monk->setKillCounter(monk->getKillCounter() + 1); //Updates the kill counter for logs
                 }
             } else if (WorL == 1) {
+                cout << "Your attack failed, you missed the monster" << endl;
                 int attack = randNum(1, currentMonster.getAttackDamage());
                 if (monk->getHealth() - attack <= 0) {
                     cout << "You Died" << endl;
-                    endGame();
+                    endGame(monk);
                 }
-                cout << "the monster attacked you and dealt " << attack << " points of damage." << endl;
+                cout << "The monster attacked you and dealt " << attack << " points of damage." << endl;
+                monk->setPlayerLog(playerLog(monk, "  Monster deals " + to_string(attack) + " damage points"));
                 monk->setHealth(monk->getHealth() - attack);
             }
-        }else if(move == "d"){
+        } else if (move == "d" || move == "D") {
             if (WorL == 0) {
-                int healthGain = randNum(1,3);
+                int healthGain = randNum(1, 3);
                 int maxHealth = monk->getMaxHealth();
                 cout << "You gained " << healthGain << " health points" << endl;
-                if(monk->getHealth() + healthGain > maxHealth){
+                monk->setPlayerLog(playerLog(monk, "  Monk heals " + to_string(healthGain) + " health points"));
+                if (monk->getHealth() + healthGain > maxHealth) {
                     monk->setHealth(maxHealth);
-                }else{
+                } else {
                     healthGain = monk->getHealth() + healthGain;
                     monk->setHealth(healthGain);
                 }
                 cout << "Your current health is " << monk->getHealth() << endl;
+                monk->setPlayerLog(playerLog(monk, "  Monk's current health " + to_string(monk->getHealth()) + " health points"));
             } else if (WorL == 1) {
                 int attack = randNum(1, currentMonster.getAttackDamage());
                 if (monk->getHealth() - attack <= 0) {
                     cout << "You Died" << endl;
-                    endGame();
+                    monk->setAlive(false);
+                    printLoseLog(monk);
+                    endGame(monk);
                 }
-                cout << "the monster attacked you and dealt " << attack << " points of damage." << endl;
+                cout << "The monster attacked you and dealt " << attack << " points of damage." << endl;
+                monk->setPlayerLog(playerLog(monk, "  Monster deals " + to_string(attack) + " damage points"));
                 monk->setHealth(monk->getHealth() - attack);
             }
-        }else{
+        } else {
             cout << "Please either enter a or d" << endl;
         }
     }
@@ -319,39 +445,43 @@ void playerCombat(Player * monk, Monster currentMonster) {
 void runGame(vector<vector<Room>> dungeon, Player * monk){
     Draw draw = Draw();
     Monster currentMonster = Monster();
-    currentMonster.setHealth(10);
+    currentMonster.setHealth(randNum(5,10));
     currentMonster.setAttackDamage(randNum(1,4));
     Room currentRoom = dungeon[monk->getX()][monk->getY()];
+    printCurrentRoomCo(monk);
     draw.printRoom(currentRoom, monk);
     while (monk->isAlive()) {
         movePlayer(monk);
         currentRoom = dungeon[monk->getX()][monk->getY()];
+        monk->setRoomCounter(monk->getRoomCounter() + 1);
         system("cls");
-        if (currentRoom.isVisited()){
-            cout << "You have already visited that room" << endl;
-        }else{
-            currentRoom.setVisited(true);
-            if (currentRoom.getType() == 1) {
-                printCurrentRoomCo(monk);
-                draw.printRoom(currentRoom, monk);
-            }else if (currentRoom.getType() == 2) {
-                printCurrentRoomCo(monk);
-                draw.printRoomWithObject(currentRoom, monk,"M");
-                playerCombat(monk, currentMonster);
-            }else if (currentRoom.getType() == 3) {
-                printCurrentRoomCo(monk);
-                draw.printRoomWithObject(currentRoom, monk,"T");
-                cout << "***   Congratulations!   ***" << endl;
-                cout << "Well done " << monk->getName() << ", you survived the dungeon with " << monk->getHealth() << " health points left." << endl;
-                cout << "You completed the dungeon with a difficulty level of " << monk->getDifficulty() << endl;
-                endGame();
-            }
+        if (currentRoom.getType() == 1) {
+            printCurrentRoomCo(monk);
+            draw.printRoom(currentRoom, monk);
+            monk->setPlayerLog(playerLog(monk, "*** Empty Room ***"));
+            cout << "Your Health: " << monk->getHealth() << " HP." << endl;
+        }else if (currentRoom.getType() == 2) {
+            printCurrentRoomCo(monk);
+            draw.printRoomWithObject(currentRoom, monk,"M");
+            monk->setPlayerLog(playerLog(monk, "*** Monster Room ***"));
+            playerCombat(monk, currentMonster);
+        }else if (currentRoom.getType() == 3) {
+            printCurrentRoomCo(monk);
+            draw.printRoomWithObject(currentRoom, monk,"T");
+            cout << "***   Congratulations!   ***" << endl;
+            cout << "Well done " << monk->getName() << ", you survived the dungeon with " << monk->getHealth() << " health points left." << endl;
+            cout << "You completed the dungeon with a difficulty level of " << monk->getDifficulty() << endl;
+            printWinLog(monk);
+            endGame(monk);
         }
     }
     cout << "You have died!" << endl;
-    endGame();
+    printLoseLog(monk);
+    endGame(monk);
 }
 
-void endGame() {
+void endGame(Player *monk) {
+    cout << "Dont forget to check you game log located in the same directory as the game, PlayerLog.txt " << endl;
+    system("pause");
     exit(1);
 }

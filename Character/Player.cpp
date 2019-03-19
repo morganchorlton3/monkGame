@@ -85,4 +85,44 @@ void Player::print(){
     cout << "Attack Damage: " << attackDamage << endl;
 }
 
+const Weapon &Player::getWeapon() const {
+    return weapon;
+}
+
+void Player::setWeapon(const Weapon &weapon) {
+    Player::weapon = weapon;
+}
+
+const vector<string> &Player::getPlayerLog() const {
+    return PlayerLog;
+}
+
+void Player::setPlayerLog(const vector<string> &PlayerLog) {
+    Player::PlayerLog = PlayerLog;
+}
+
+int Player::getRoomCounter() const {
+    return roomCounter;
+}
+
+void Player::setRoomCounter(int roomCounter) {
+    Player::roomCounter = roomCounter;
+}
+
+int Player::getKillCounter() const {
+    return killCounter;
+}
+
+void Player::setKillCounter(int killCounter) {
+    Player::killCounter = killCounter;
+}
+
+int Player::getDungeonSize() const {
+    return dungeonSize;
+}
+
+void Player::setDungeonSize(int dungeonSize) {
+    Player::dungeonSize = dungeonSize;
+}
+
 

@@ -31,6 +31,7 @@ public:
     void eTopLeftRight(string letter);
     void eCenterRoom(string letter);
     void eBottomRight(string letter);
+    void eBottomLeft(string letter);
     void eBottomBoth(string letter);
     void printRoom(Room currentRoom, Player * monk);
     void printRoomWithObject(Room currentRoom, Player * monk, string letter);

@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Room.h"
 
-Room::Room(const string &name, int type, int X, int Y, bool visited) : name(name), type(type), X(X), Y(Y), visited(visited) {}
+Room::Room(const string &name, int type, int X, int Y) : name(name), type(type), X(X), Y(Y) {}
 
 const string &Room::getName() const {
     return name;
@@ -37,12 +37,4 @@ int Room::getY() const {
 
 void Room::setY(int Y) {
     Room::Y = Y;
-}
-
-bool Room::isVisited() const {
-    return visited;
-}
-
-void Room::setVisited(bool visited) {
-    Room::visited = visited;
 }

@@ -5,19 +5,20 @@
 #ifndef MONK_PLAYER_H
 #define MONK_PLAYER_H
 #include <string>
+#include <vector>
 #include "../Tools/Weapon.h"
 
 class Player {
     std::string Name, WeaponName;
-    int difficulty, health, maxHealth, attackDamage, x, y;
+    int difficulty, health, maxHealth, attackDamage, dungeonSize,  x, y, roomCounter, killCounter;
     bool alive;
+    Weapon weapon;
+    vector <string> PlayerLog;
 public:
     bool isAlive() const;
 
     void setAlive(bool alive);
 
-
-public:
     Player();
 
     const std::string &getName() const;
@@ -53,6 +54,26 @@ public:
     void setWeaponName(const string &WeaponName);
 
     void print();
+
+    const Weapon &getWeapon() const;
+
+    void setWeapon(const Weapon &weapon);
+
+    const vector<string> &getPlayerLog() const;
+
+    void setPlayerLog(const vector<string> &PlayerLog);
+
+    int getRoomCounter() const;
+
+    void setRoomCounter(int roomCounter);
+
+    int getKillCounter() const;
+
+    void setKillCounter(int killCounter);
+
+    int getDungeonSize() const;
+
+    void setDungeonSize(int dungeonSize);
 
 
 };

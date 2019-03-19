@@ -1,5 +1,5 @@
 //
-// Created by morga on 12/03/2019.
+// Created by Morgan on 12/03/2019.
 //
 
 #include "draw.h"
@@ -71,20 +71,20 @@ void Draw::sideWallEntranceBoth(){
 
 void Draw::sideWallWithPlayer(){
     cout << "*";
-    for (int column = 0; column < 13; ++column)
+    for (int column = 0; column < 14; ++column)
         cout << " ";
     cout << "P";
-    for (int column = 0; column < 14; ++column)
+    for (int column = 0; column < 13; ++column)
         cout << " ";
     cout << "*" << endl;
 }
 
 void Draw::sideWallWithObject(string letter){
     cout << "*";
-    for (int column = 0; column < 13; ++column)
+    for (int column = 0; column < 14; ++column)
         cout << " ";
     cout << letter;
-    for (int column = 0; column < 14; ++column)
+    for (int column = 0; column < 13; ++column)
         cout << " ";
     cout << "*" << endl;
 }
@@ -148,12 +148,25 @@ void Draw::eCenterRoom(string letter) {
     sideWall(1);
     topWallEntrance();
 }
+
 void Draw::eBottomRight(string letter){
     topWallSolid();
     sideWall(1);
     sideWallWithObject(letter);
     sideWall(2);
     sideWallEntranceRight();
+    sideWall(2);
+    sideWallWithPlayer();
+    sideWall(1);
+    topWallEntrance();
+}
+
+void Draw::eBottomLeft(string letter){
+    topWallSolid();
+    sideWall(1);
+    sideWallWithObject(letter);
+    sideWall(2);
+    sideWallEntranceLeft();
     sideWall(2);
     sideWallWithPlayer();
     sideWall(1);
@@ -187,7 +200,6 @@ void Draw::printRoom(Room currentRoom, Player * monk){
     int x,y;
     x = monk->getX();
     y = monk->getY();
-    cout << "X: " << monk->getX() << " Y: " << monk->getY() << endl;
     if (x == 0 & y == 0){
         eBottomRight(" ");
     }else if (x == 0 & y == 1 || x == 0 & y == 2 || x == 0 & y == 3 || x == 0 & y == 4) {
@@ -200,18 +212,18 @@ void Draw::printRoom(Room currentRoom, Player * monk){
         eTopLeftBottom(" ");
     }else if(x == 5 & y == 5) {
         eTopLeft(" ");
+    }else if(x == 5 & y == 0) {
+        eBottomLeft(" ");
     }else if(x == 1 & y == 0 || x == 2 & y == 0 || x == 3 & y == 0 || x == 4 & y == 0){
         eBottomBoth(" ");
     }else{
         eCenterRoom(" ");
     }
-    currentRoom.setVisited(true);
 }
 void Draw::printRoomWithObject(Room currentRoom, Player * monk, string letter){
     int x,y;
     x = monk->getX();
     y = monk->getY();
-    cout << "X: " << monk->getX() << " Y: " << monk->getY() << endl;
     if (x == 0 & y == 0){
         eBottomRight(letter);
     }else if (x == 0 & y == 1 || x == 0 & y == 2 || x == 0 & y == 3 || x == 0 & y == 4) {
@@ -224,12 +236,13 @@ void Draw::printRoomWithObject(Room currentRoom, Player * monk, string letter){
         eTopLeftBottom(letter);
     }else if(x == 5 & y == 5) {
         eTopLeft(letter);
+    }else if(x == 5 & y == 0) {
+        eBottomLeft(letter);
     }else if(x == 1 & y == 0 || x == 2 & y == 0 || x == 3 & y == 0 || x == 4 & y == 0){
         eBottomBoth(letter);
     }else{
         eCenterRoom(letter);
     }
-    currentRoom.setVisited(true);
 }
 
 Draw::Draw() {}
