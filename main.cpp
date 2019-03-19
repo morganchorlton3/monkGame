@@ -13,6 +13,7 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <stdio.h>
 
 using namespace std;
 
@@ -52,6 +53,11 @@ bool howToPlay();
 
 int main() {
     srand((unsigned) time(NULL));//Sets seed for random generator
+    // clears log file from previous runs
+    if( remove( "PlayerLog.txt" ) != 0 )
+        perror( "Error deleting file" );
+    else
+        puts( "File successfully deleted" );
     if (howToPlay()) {
         vector<Weapon> weaponList = createWeapons();
         Player *monk = new Player(Welcome());
@@ -352,6 +358,7 @@ void printWinLog(Player * monk){
 }
 
 void printLoseLog(Player * monk){
+    //Prints log
     fstream file("PlayerLog.txt", ios::app); //open for output
     file << "Commiserations " << monk->getName() <<" You lost the battle" << endl;
     file << "Player Statistics: " << endl << endl;
