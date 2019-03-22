@@ -185,7 +185,7 @@ void Draw::eBottomBoth(string letter){
     topWallEntrance();
 }
 void Draw::eTopLeftBottom(string letter){
-    topWallSolid();
+    topWallEntrance();
     sideWall(1);
     sideWallWithObject(letter);
     sideWall(2);
@@ -196,28 +196,28 @@ void Draw::eTopLeftBottom(string letter){
     topWallEntrance();
 }
 
-void Draw::printRoom(Room currentRoom, Player * monk){
+void Draw::printRoom(Room currentRoom, Player * monk, string letter){
     int x,y;
     x = monk->getX();
     y = monk->getY();
     if (x == 0 & y == 0){
-        eBottomRight(" ");
+        eBottomRight(letter);
     }else if (x == 0 & y == 1 || x == 0 & y == 2 || x == 0 & y == 3 || x == 0 & y == 4) {
-        eTopRightBottom(" ");
+        eTopRightBottom(letter);
     }else if(x == 0 & y == 5){
-        eTopRight(" ");
+        eTopRight(letter);
     }else if(x == 1 & y == 5 || x == 2 & y == 5 || x == 3 & y == 5 || x == 4 & y == 5 || x == 4 & y == 5){
-        eTopLeftRight(" ");
+        eTopLeftRight(letter);
     }else if(x == 5 & y == 1 || x == 5 & y == 2 || x == 5 & y == 3 || x == 5 & y == 4){
-        eTopLeftBottom(" ");
+        eTopLeftBottom(letter);
     }else if(x == 5 & y == 5) {
-        eTopLeft(" ");
+        eTopLeft(letter);
     }else if(x == 5 & y == 0) {
-        eBottomLeft(" ");
+        eBottomLeft(letter);
     }else if(x == 1 & y == 0 || x == 2 & y == 0 || x == 3 & y == 0 || x == 4 & y == 0){
-        eBottomBoth(" ");
+        eBottomBoth(letter);
     }else{
-        eCenterRoom(" ");
+        eCenterRoom(letter);
     }
 }
 void Draw::printRoomWithObject(Room currentRoom, Player * monk, string letter){

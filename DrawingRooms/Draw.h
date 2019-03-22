@@ -33,7 +33,7 @@ public:
     void eBottomRight(string letter);
     void eBottomLeft(string letter);
     void eBottomBoth(string letter);
-    void printRoom(Room currentRoom, Player * monk);
+    void printRoom(Room currentRoom, Player * monk, string letter);
     void printRoomWithObject(Room currentRoom, Player * monk, string letter);
 
 };

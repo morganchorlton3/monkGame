@@ -51,7 +51,7 @@ void endGame(Player *monk);
 
 bool howToPlay();
 
-int main() {
+int main(int ac, char* av[]) {
     srand((unsigned) time(NULL));//Sets seed for random generator
     // clears log file from previous runs
     if( remove( "PlayerLog.txt" ) != 0 )
@@ -109,7 +109,7 @@ int main() {
 
 bool howToPlay() {
     cout << "How to Play: " << endl << endl;
-    cout << "   The aim of the game is to reach the treasure room alive along the way you will enter rooms with monster in that you have to defeat." << endl;
+    cout << "   The aim of the game is to reach the treasure room alive, along the way you will enter rooms with monsters in that you have to defeat." << endl;
     cout << "Player Movement: " << endl << endl;
     cout << "   Move around the dungeon by using W,A,S and D." << endl;
     cout << "   If you are in an empty room you can heal with H." << endl << endl;
@@ -343,7 +343,7 @@ vector < string > playerLog(Player * monk, string text){
 }
 
 void printWinLog(Player * monk){
-    fstream file("PlayerLog.txt", ios::app); //open for output
+    fstream file("PlayerLog.txt", ios::out); //open for output
     file << "Congratulations " << monk->getName() <<" on defeating the dungeon " << endl;
     file << "You completed the dungeon with a difficulty level of " << monk->getDifficulty() << endl;
     file << "Player Statistics: " << endl << endl;
@@ -410,7 +410,9 @@ void playerCombat(Player * monk, Monster currentMonster) {
                 cout << "Your attack failed, you missed the monster" << endl;
                 int attack = randNum(1, currentMonster.getAttackDamage());
                 if (monk->getHealth() - attack <= 0) {
+                    cout << "The monster attacked you and dealt " << attack << " points of damage." << endl;
                     cout << "You Died" << endl;
+                    printLoseLog(monk);
                     endGame(monk);
                 }
                 cout << "The monster attacked you and dealt " << attack << " points of damage." << endl;
@@ -456,7 +458,7 @@ void runGame(vector<vector<Room>> dungeon, Player * monk){
     currentMonster.setAttackDamage(randNum(1,4));
     Room currentRoom = dungeon[monk->getX()][monk->getY()];
     printCurrentRoomCo(monk);
-    draw.printRoom(currentRoom, monk);
+    draw.printRoom(currentRoom, monk, " ");
     while (monk->isAlive()) {
         movePlayer(monk);
         currentRoom = dungeon[monk->getX()][monk->getY()];
@@ -464,7 +466,7 @@ void runGame(vector<vector<Room>> dungeon, Player * monk){
         system("cls");
         if (currentRoom.getType() == 1) {
             printCurrentRoomCo(monk);
-            draw.printRoom(currentRoom, monk);
+            draw.printRoom(currentRoom, monk," ");
             monk->setPlayerLog(playerLog(monk, "*** Empty Room ***"));
             cout << "Your Health: " << monk->getHealth() << " HP." << endl;
         }else if (currentRoom.getType() == 2) {
