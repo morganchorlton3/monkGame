@@ -199,11 +199,11 @@ vector < Weapon > createWeapons() {
     weaponList.push_back(w1);
     Weapon w2 = Weapon(1,"Walking stick","Stick", 4);
     weaponList.push_back(w2);
-    Weapon w3 = Weapon(2,"Splitting Pain","Battle Axe", 5);
+    Weapon w3 = Weapon(2,"Splitting Pain","Battle Axe", 6);
     weaponList.push_back(w3);
-    Weapon w4 = Weapon(3,"Ramming rampage","Hammer", 2);
+    Weapon w4 = Weapon(3,"Ramming rampage","Hammer", 5);
     weaponList.push_back(w3);
-    Weapon w5 = Weapon(4,"Ninja Crazy","Nunchucks", 1);
+    Weapon w5 = Weapon(4,"Ninja Crazy","Nunchucks", 3);
     weaponList.push_back(w4);
     return weaponList;
 };
@@ -232,16 +232,11 @@ vector < vector <Room> > generateDungeon(){
     }
     vector<Room>temp;
     for (int k = 0; k < 5; k++){
-        int decider = randNum(1, 2);
-        if (decider == 1) {
-            Room room = Room("name", 3, k, 5);
-            temp.push_back(room);
-        }else {
-            Room room = Room("Treasure name", randNum(1, 2), k, 5);
-            temp.push_back(room);
-        }
+        Room room = Room("name", randNum(1, 2), k, 5);
+        temp.push_back(room);
+
     }
-    Room room = Room("name", 3, 5, 5);
+    Room room = Room("Treasure name", 3, 5, 5);
     temp.push_back(room);
     dungeon.push_back(temp);
     return dungeon;
